@@ -10,12 +10,11 @@ public abstract class PublicationEntity extends ProductEntity {
 
     private String title;
 
-    @Column(name = "pub_price") private double price;
     private int copies;
 
     public PublicationEntity() {}
 
-    public PublicationEntity(String t, double p, int c) { this.title = t; this.price = p; this.copies = c; }
+    public PublicationEntity(String t, double p, int c) { this.title = t;  this.copies = c; }
 
     @Override
     public void sellItem() {
@@ -23,10 +22,6 @@ public abstract class PublicationEntity extends ProductEntity {
         else { System.out.println("Cannot sell '" + title + "'. Out of stock."); }
     }
 
-    @Override
-    public double getPrice() {
-        return price;
-    }
 
     public String getTitle() {
         return title;
@@ -34,7 +29,6 @@ public abstract class PublicationEntity extends ProductEntity {
 
     public void setTitle(String t) { this.title = t; }
 
-    public void setPrice(double p) { this.price = p; }
 
     public int getCopies() { return copies; }
 
@@ -42,18 +36,21 @@ public abstract class PublicationEntity extends ProductEntity {
 
     @Override
     public String toString() {
-        return "Pub{title='" + title + "', price=" + price + ", copies=" + copies + "}";
+        return "PublicationEntity{" +
+                "title='" + title + '\'' +
+                ", copies=" + copies +
+                '}';
     }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         PublicationEntity that = (PublicationEntity) o;
-        return Double.compare(price, that.price) == 0 && copies == that.copies && Objects.equals(title, that.title);
+        return copies == that.copies && Objects.equals(title, that.title);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, price, copies);
+        return Objects.hash(title, copies);
     }
 }

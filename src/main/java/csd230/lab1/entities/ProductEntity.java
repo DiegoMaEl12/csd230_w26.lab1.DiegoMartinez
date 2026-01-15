@@ -15,6 +15,7 @@ public abstract class ProductEntity implements Serializable, SaleableItem {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private double price;
     @ManyToMany(mappedBy = "products")
     private Set<CartEntity> carts = new LinkedHashSet<>();
 
@@ -25,6 +26,15 @@ public abstract class ProductEntity implements Serializable, SaleableItem {
     public Long getId() { return id; }
 
     public void setId(Long id) { this.id = id; }
+
+    @Override
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 
     @Override
     public String toString() {

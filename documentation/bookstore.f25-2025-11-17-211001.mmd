@@ -1,97 +1,133 @@
 classDiagram
-    Editable <|--Product
-    Product <|--Ticket
-    Product <|--Publication
+
+%% =====================
+%% Inheritance hierarchy
+%% =====================
+
+    Product <|-- Ticket
+    Product <|-- Publication
     Publication <|-- Book
     Publication <|-- Magazine
     Magazine <|-- DiscMag
+
+%% New electronics sub-hierarchy
+    Product <|-- Electronic
+    Electronic <|-- Phone
+    Electronic <|-- Laptop
+
+%% Interfaces
     SaleableItem <|.. Product
     Serializable <|.. Product
-    Product <-- CashTill
 
-    class Product{
-        -String productId
-    }
+%% Cart relationship
+Cart -- "0..*" Product
 
-    class Serializable{
-        <<interface>>
-    }
-    class Ticket{
-        +description
-        +price
-        +sellItem()
-    }
-    class Editable{
-        <<abstract>>
-        -Scanner input
-        +String getInput(String)
-        +int getInput(int)
-        +double getInput(double)
-        +boolean getInput(boolean)
-        +Date getInput(Date)
-        +Enum getInput(Enum)
-        +edit()*
-        +initialize()*
+%% =====================
+%% Core classes
+%% =====================
 
-    }
-    class Publication{
-        <<Abstract>>
-        -String title
-        -double price
-        -int copies
-        +getPrice()
+class Product {
+-String productId
+}
 
-        +Publication()
-        +Publication(String title, double price, int copies)
-        +toString()
-        +equals()
-        +hashCode()
+class Serializable {
+<<interface>>
+}
 
-    }
-    class Book{
-        -String author
-        +edit()
-        +initialize()
-        +sellItem()
+class SaleableItem {
+<<interface>>
++sellItem()
++getPrice()
+}
 
-        +Book()
-        +Book(String author)
-        +Book(String author, String title, double price, int copies)
-        +toString()
-        +equals()
-        +hashCode()
+%% =====================
+%% Ticket
+%% =====================
 
-    }
-    class Magazine{
-        -int orderQty
-        -java.util.Date currentIssue
+class Ticket {
++String description
++double price
++sellItem()
++getPrice()
+}
 
-        +Magazine()
-        +Magazine(int orderQty, Date currentIssue, String title, double price, int copies)
+%% =====================
+%% Publications
+%% =====================
 
-        +edit()
-        +initialize()
-        +sellItem()
-    }
-    class DiscMag{
-        -boolean hasDisc
-        +edit()
-        +initialize()
-        +sellItem()
+class Publication {
+<<abstract>>
+-String title
+-double price
+-int copies
 
-        +DiscMag()
-        +DiscMag(boolean, hasDisc, int orderQty, Date currentIssue, String title, double price, int copies)
++getPrice()
++Publication()
++Publication(String title, double price, int copies)
++toString()
++equals()
++hashCode()
+}
 
-    }
-    class CashTill{
-        -double runningTotal
-        +CashTill()
-        +showTotal()
-        +sellItem(SaleableItem item)
-    }
-    class SaleableItem {
-        <<interface>>
-        +sellItem()
-        +getPrice()
+class Book {
+-String author
++edit()
++initialize()
++sellItem()
+}
 
-    }
+class Magazine {
+-int orderQty
+-Date currentIssue
+
++edit()
++initialize()
++sellItem()
+}
+
+class DiscMag {
+-boolean hasDisc
++edit()
++initialize()
++sellItem()
+}
+
+%% =====================
+%% Electronics
+%% =====================
+
+class Electronic {
+<<abstract>>
+- double price
+-String serialNumber
+- int quantity
++Electronic()
++Electronic(String serialNumber, double price, int quantity)
++getPrice()
++edit()
++initialize()
++sellItem()
++toString()
+}
+
+class Phone {
+-String carrier
+}
+
+class Laptop {
+-String storageSize
+}
+
+%% =====================
+%% Cart
+%% =====================
+
+class Cart {
+-String cartId
+-Set~Product~ products
+
++Cart()
++addProduct(Product)
++removeProduct(Product)
++getTotal()
+}
