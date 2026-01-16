@@ -26,6 +26,11 @@ public class CartEntity {
         product.getCarts().add(this); // Maintain the link on both sides
     }
 
+    public void removeProduct(ProductEntity product) {
+        this.products.remove(product);
+        product.getCarts().remove(this); // Maintain the link on both sides
+    }
+
     public Long getId() {
         return id;
     }

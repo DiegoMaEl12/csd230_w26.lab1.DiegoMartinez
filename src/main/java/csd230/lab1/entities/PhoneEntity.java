@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 
+import java.util.Objects;
+
 @Entity @DiscriminatorValue("PHONE")
 public class PhoneEntity extends ElectronicEntity {
 
@@ -24,5 +26,22 @@ public class PhoneEntity extends ElectronicEntity {
         this.carrier = carrier;
     }
 
+    @Override
+    public String toString() {
+        return "PhoneEntity{" +
+                "carrier='" + carrier + '\'' +
+                '}' + super.toString();
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PhoneEntity that = (PhoneEntity) o;
+        return Objects.equals(carrier, that.carrier);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(carrier);
+    }
 }

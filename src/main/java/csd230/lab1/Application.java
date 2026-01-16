@@ -3,6 +3,7 @@ package csd230.lab1;
 import com.github.javafaker.Commerce;
 import com.github.javafaker.Faker;
 import csd230.lab1.entities.*;
+import csd230.lab1.pojos.Laptop;
 import csd230.lab1.repositories.CartEntityRepository;
 import csd230.lab1.repositories.ProductEntityRepository;
 import jakarta.transaction.Transactional;
@@ -79,6 +80,12 @@ public class Application implements CommandLineRunner {
                 carriers[faker.number().numberBetween(0, carriers.length - 1)]
         );
 
+        LaptopEntity laptop = new LaptopEntity(
+                faker.regexify("[A-F0-9]{32}"),
+                faker.number().numberBetween(0,100),
+                faker.number().numberBetween(128,2048) + "GB"
+        );
+
         CartEntity cart = new CartEntity();
         cartRepository.save(cart);
 
@@ -92,9 +99,12 @@ public class Application implements CommandLineRunner {
         cartRepository.save(cart);
         cart.addProduct(phone);
         cartRepository.save(cart);
+        cart.addProduct(laptop);
+        cartRepository.save(cart);
 
         List<ProductEntity> products = productRepository.findAll();
 
+        System.out.println("CART 1: TESTING CREATE");
         for(ProductEntity p : products) {
             System.out.println(p.toString());
         }
@@ -105,5 +115,65 @@ public class Application implements CommandLineRunner {
                 System.out.println(" - " + p.toString());
             }
         }
+
+        System.out.println("CART 2: TESTING UPDATE");
+
+        CartEntity cart2 = new  CartEntity();
+        cartRepository.save(cart2);
+        cart2.addProduct(book);
+        cart2.addProduct(phone);
+        cart2.addProduct(laptop);
+        cart2.addProduct(discMag);
+        cart2.addProduct(magazine);
+        cart2.addProduct(ticket);
+
+        List<ProductEntity> products2 = productRepository.findAll();
+        System.out.println("Original Cart");
+        for(ProductEntity p : products2) {
+            System.out.println(p.toString());
+        }
+        book.setAuthor("Diego MaEl");
+        magazine.setTitle("Diego");
+        discMag.setTitle("Diego");
+        ticket.setDescription("Diego");
+        phone.setCarrier("Diego Mobile");
+        laptop.setStorageSize("Diego gB");
+
+        List<ProductEntity> updatedProducts = productRepository.findAll();
+
+        System.out.println("Updated Cart");
+        for(ProductEntity p : updatedProducts) {
+
+            System.out.println(p.toString());
+        }
+
+        CartEntity cart3 = new  CartEntity();
+        cartRepository.save(cart3);
+        cart3.addProduct(book);
+        cart3.addProduct(phone);
+        cart3.addProduct(laptop);
+        cart3.addProduct(discMag);
+        cart3.addProduct(magazine);
+        cart3.addProduct(ticket);
+
+        System.out.println("CART 3: TESTING DELETE (will just leave a book)");
+
+        System.out.println("Original Cart before deletes");
+        for(ProductEntity p : cart3.getProducts()) {
+            System.out.println(p.toString());
+        }
+
+        cart3.removeProduct(magazine);
+        cart3.removeProduct(laptop);
+        cart3.removeProduct(phone);
+        cart3.removeProduct(discMag);
+        cart3.removeProduct(ticket);
+        cartRepository.save(cart3);
+
+        System.out.println("Final Cart after deletes");
+        for(ProductEntity p : cart3.getProducts()) {
+            System.out.println(p.toString());
+        }
+
     }
 }
