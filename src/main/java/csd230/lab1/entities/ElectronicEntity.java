@@ -15,9 +15,10 @@ public abstract class ElectronicEntity extends ProductEntity {
 
     public ElectronicEntity() {}
 
-    public ElectronicEntity(String serialNumber, int quantity) {
+    public ElectronicEntity(String serialNumber, int quantity, double price) {
         this.serialNumber = serialNumber;
         this.quantity = quantity;
+        this.setPrice(price);
     }
 
     public String getSerialNumber() {

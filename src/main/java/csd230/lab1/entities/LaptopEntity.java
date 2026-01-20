@@ -13,8 +13,8 @@ public class LaptopEntity extends ElectronicEntity {
 
     public LaptopEntity() {}
 
-    public LaptopEntity(String serialNumber, int quantity, String storageSize) {
-        super(serialNumber, quantity);
+    public LaptopEntity(String serialNumber, int quantity, String storageSize, double price) {
+        super(serialNumber, quantity, price);
         this.storageSize = storageSize;
     }
 

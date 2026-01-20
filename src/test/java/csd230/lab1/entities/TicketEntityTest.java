@@ -22,8 +22,8 @@ class TicketEntityTest {
 
     @Test
     void equals_shouldReturnTrue_forSameDescriptionAndPrice() {
-        TicketEntity t1 = new TicketEntity("Movie Ticket", 12.50);
-        TicketEntity t2 = new TicketEntity("Movie Ticket", 12.50);
+        TicketEntity t1 = new TicketEntity("Movie Ticket", 18.99);
+        TicketEntity t2 = new TicketEntity("Movie Ticket", 18.99);
 
         assertEquals(t1, t2);
         assertEquals(t1.hashCode(), t2.hashCode());

@@ -14,7 +14,7 @@ public abstract class PublicationEntity extends ProductEntity {
 
     public PublicationEntity() {}
 
-    public PublicationEntity(String t, double p, int c) { this.title = t;  this.copies = c; }
+    public PublicationEntity(String t, double p, int c) { this.title = t; this.setPrice(p);  this.copies = c; }
 
     @Override
     public void sellItem() {

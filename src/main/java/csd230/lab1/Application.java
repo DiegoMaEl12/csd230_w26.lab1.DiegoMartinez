@@ -44,70 +44,69 @@ public class Application implements CommandLineRunner {
 
         Faker faker = new Faker();
 
-        BookEntity book = new BookEntity(
-                faker.book().title(),
-                Double.parseDouble(faker.commerce().price()),
-                faker.number().numberBetween(1, 20),
-                faker.book().author(),
-                faker.number().digits(13)
-        );
+        for (int i = 0; i < 10; i++) {
 
-        MagazineEntity magazine = new MagazineEntity(
-                faker.lorem().word() + " Magazine",
-                Double.parseDouble(faker.commerce().price()),
-                faker.number().numberBetween(1, 20),
-                faker.number().numberBetween(1,50),
-                LocalDateTime.now()
-        );
+            CartEntity cart = new CartEntity();
+            cartRepository.save(cart);
 
-        DiscMagEntity discMag = new DiscMagEntity(
-                faker.lorem().word() + " Disc Magazine",
-                Double.parseDouble(faker.commerce().price()),
-                faker.number().numberBetween(1, 20),
-                faker.number().numberBetween(1,50),
-                LocalDateTime.now(),
-                faker.bool().bool()
-        );
+            for (int j = 0; j < 3; j++){
 
-        TicketEntity ticket = new TicketEntity(
-                faker.lorem().sentence(),
-                Double.parseDouble(faker.commerce().price())
-        );
+                BookEntity book = new BookEntity(
+                        faker.book().title(),
+                        Double.parseDouble(faker.commerce().price()),
+                        faker.number().numberBetween(1, 20),
+                        faker.book().author(),
+                        faker.number().digits(13)
+                );
+                cart.addProduct(book);
 
-        PhoneEntity phone = new PhoneEntity(
-                faker.regexify("[A-F0-9]{32}"),
-                faker.number().numberBetween(0,100),
-                carriers[faker.number().numberBetween(0, carriers.length - 1)]
-        );
+                MagazineEntity magazine = new MagazineEntity(
+                        faker.lorem().word() + " Magazine",
+                        Double.parseDouble(faker.commerce().price()),
+                        faker.number().numberBetween(1, 20),
+                        faker.number().numberBetween(1,50),
+                        LocalDateTime.now()
+                );
+                cart.addProduct(magazine);
 
-        LaptopEntity laptop = new LaptopEntity(
-                faker.regexify("[A-F0-9]{32}"),
-                faker.number().numberBetween(0,100),
-                faker.number().numberBetween(128,2048) + "GB"
-        );
+                DiscMagEntity discMag = new DiscMagEntity(
+                        faker.lorem().word() + " Disc Magazine",
+                        Double.parseDouble(faker.commerce().price()),
+                        faker.number().numberBetween(1, 20),
+                        faker.number().numberBetween(1,50),
+                        LocalDateTime.now(),
+                        faker.bool().bool()
+                );
+                cart.addProduct(discMag);
 
-        CartEntity cart = new CartEntity();
-        cartRepository.save(cart);
+                TicketEntity ticket = new TicketEntity(
+                        faker.lorem().sentence(),
+                        faker.number().randomDouble(2, 1, 100L)
+                );
+                cart.addProduct(ticket);
 
-        cart.addProduct(book);
-        cartRepository.save(cart);
-        cart.addProduct(magazine);
-        cartRepository.save(cart);
-        cart.addProduct(discMag);
-        cartRepository.save(cart);
-        cart.addProduct(ticket);
-        cartRepository.save(cart);
-        cart.addProduct(phone);
-        cartRepository.save(cart);
-        cart.addProduct(laptop);
-        cartRepository.save(cart);
+                PhoneEntity phone = new PhoneEntity(
+                        faker.regexify("[A-F0-9]{32}"),
+                        faker.number().numberBetween(0,100),
+                        carriers[faker.number().numberBetween(0, carriers.length - 1)],
+                        faker.number().randomDouble(2,1,100L)
+                );
+                cart.addProduct(phone);
 
-        List<ProductEntity> products = productRepository.findAll();
+                LaptopEntity laptop = new LaptopEntity(
+                        faker.regexify("[A-F0-9]{32}"),
+                        faker.number().numberBetween(0,100),
+                        faker.number().numberBetween(128,2048) + "GB",
+                        faker.number().randomDouble(2,1,100L)
+                );
+                cart.addProduct(laptop);
 
-        System.out.println("CART 1: TESTING CREATE");
-        for(ProductEntity p : products) {
-            System.out.println(p.toString());
+                cartRepository.save(cart);
+            }
+
+
         }
+
         List<CartEntity> allCarts = cartRepository.findAll();
         for(CartEntity c : allCarts) {
             System.out.println(c.toString());
@@ -115,65 +114,5 @@ public class Application implements CommandLineRunner {
                 System.out.println(" - " + p.toString());
             }
         }
-
-        System.out.println("CART 2: TESTING UPDATE");
-
-        CartEntity cart2 = new  CartEntity();
-        cartRepository.save(cart2);
-        cart2.addProduct(book);
-        cart2.addProduct(phone);
-        cart2.addProduct(laptop);
-        cart2.addProduct(discMag);
-        cart2.addProduct(magazine);
-        cart2.addProduct(ticket);
-
-        List<ProductEntity> products2 = productRepository.findAll();
-        System.out.println("Original Cart");
-        for(ProductEntity p : products2) {
-            System.out.println(p.toString());
-        }
-        book.setAuthor("Diego MaEl");
-        magazine.setTitle("Diego");
-        discMag.setTitle("Diego");
-        ticket.setDescription("Diego");
-        phone.setCarrier("Diego Mobile");
-        laptop.setStorageSize("Diego gB");
-
-        List<ProductEntity> updatedProducts = productRepository.findAll();
-
-        System.out.println("Updated Cart");
-        for(ProductEntity p : updatedProducts) {
-
-            System.out.println(p.toString());
-        }
-
-        CartEntity cart3 = new  CartEntity();
-        cartRepository.save(cart3);
-        cart3.addProduct(book);
-        cart3.addProduct(phone);
-        cart3.addProduct(laptop);
-        cart3.addProduct(discMag);
-        cart3.addProduct(magazine);
-        cart3.addProduct(ticket);
-
-        System.out.println("CART 3: TESTING DELETE (will just leave a book)");
-
-        System.out.println("Original Cart before deletes");
-        for(ProductEntity p : cart3.getProducts()) {
-            System.out.println(p.toString());
-        }
-
-        cart3.removeProduct(magazine);
-        cart3.removeProduct(laptop);
-        cart3.removeProduct(phone);
-        cart3.removeProduct(discMag);
-        cart3.removeProduct(ticket);
-        cartRepository.save(cart3);
-
-        System.out.println("Final Cart after deletes");
-        for(ProductEntity p : cart3.getProducts()) {
-            System.out.println(p.toString());
-        }
-
     }
 }

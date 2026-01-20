@@ -40,7 +40,8 @@ public abstract class ProductEntity implements Serializable, SaleableItem {
     public String toString() {
         return "ProductEntity{" +
                 "id=" + id +
+                ", price=" + price +
                 ", carts=" + carts +
-                '}' + super.toString();
+                '}';
     }
 }

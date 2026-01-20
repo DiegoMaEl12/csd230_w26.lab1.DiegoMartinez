@@ -14,11 +14,12 @@ class PhoneEntityTest {
 
     @Test
     void parameterizedConstructor_shouldSetFieldsCorrectly() {
-        PhoneEntity phone = new PhoneEntity("PH-001", 10, "Rogers");
+        PhoneEntity phone = new PhoneEntity("PH-001", 10, "Rogers", 699.99);
 
         assertEquals("PH-001", phone.getSerialNumber());
         assertEquals(10, phone.getQuantity());
         assertEquals("Rogers", phone.getCarrier());
+        assertEquals(699.99, phone.getPrice());
     }
 
     @Test

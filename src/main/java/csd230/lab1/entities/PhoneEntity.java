@@ -13,8 +13,8 @@ public class PhoneEntity extends ElectronicEntity {
 
     public PhoneEntity() {}
 
-    public PhoneEntity(String serialNumber, int quantity, String carrier) {
-        super(serialNumber, quantity);
+    public PhoneEntity(String serialNumber, int quantity, String carrier, double price) {
+        super(serialNumber, quantity, price);
         this.carrier = carrier;
     }
 
