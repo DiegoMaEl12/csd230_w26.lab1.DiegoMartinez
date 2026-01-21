@@ -1,13 +1,17 @@
 package csd230.lab1.controllers;
 import csd230.lab1.entities.BookEntity;
 import csd230.lab1.entities.CartEntity;
+import csd230.lab1.entities.OrderEntity;
+import csd230.lab1.entities.PublicationEntity;
 import csd230.lab1.repositories.BookEntityRepository;
 import csd230.lab1.repositories.CartEntityRepository;
+import csd230.lab1.repositories.OrderEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/cart")
@@ -18,6 +22,9 @@ public class CartController {
 
     @Autowired
     private BookEntityRepository bookRepository;
+
+    @Autowired
+    private OrderEntityRepository orderRepository;
 
     // 1. View the contents of the cart
     @GetMapping
@@ -60,5 +67,34 @@ public class CartController {
             cartRepository.save(cart);
         }
         return "redirect:/cart";
+    }
+
+    @PostMapping("/cart/checkout")
+    public String checkoutCart() {
+        CartEntity cart = cartRepository.findById(1L).orElse(null);
+        if(cart == null || cart.getProducts().isEmpty()) {
+            return "redirect:/cart";
+        }
+        OrderEntity order = new OrderEntity();
+        order.setOrderDate(java.time.LocalDateTime.now());
+        for(var product : cart.getProducts()) {
+            order.setTotalAmount(order.getTotalAmount() + product.getPrice());
+            if(product instanceof PublicationEntity) {
+                var copies = ((PublicationEntity) (product)).getCopies();
+                if (copies <= 0) {
+                    continue; // Skip this product
+                }
+                else{
+                    ((PublicationEntity) product).setCopies(
+                            ((PublicationEntity) product).getCopies() - 1
+                    );
+                }
+            }
+            order.getProducts().add(product);
+        }
+        orderRepository.save(order);
+        cart.getProducts().clear();
+        cartRepository.save(cart);
+        return "redirect:/orders";
     }
 }

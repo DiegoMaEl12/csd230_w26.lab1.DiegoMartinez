@@ -47,4 +47,12 @@ public class CartEntity {
         this.id = id;
     }
 
+    @Override
+    public String toString() {
+        return "CartEntity{" +
+                "id=" + id +
+                ", productCount=" + products.size() +
+                '}';
+    }
+
 }

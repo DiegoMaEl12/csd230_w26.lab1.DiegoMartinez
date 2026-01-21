@@ -44,67 +44,62 @@ public class Application implements CommandLineRunner {
 
         Faker faker = new Faker();
 
-        for (int i = 0; i < 10; i++) {
+        CartEntity cart = new CartEntity();
+        cartRepository.save(cart);
 
-            CartEntity cart = new CartEntity();
+        for (int j = 0; j < 3; j++){
+
+            BookEntity book = new BookEntity(
+                    faker.book().title(),
+                    Double.parseDouble(faker.commerce().price()),
+                    faker.number().numberBetween(1, 20),
+                    faker.book().author(),
+                    faker.number().digits(13)
+            );
+            cart.addProduct(book);
+
+            MagazineEntity magazine = new MagazineEntity(
+                    faker.lorem().word() + " Magazine",
+                    Double.parseDouble(faker.commerce().price()),
+                    faker.number().numberBetween(1, 20),
+                    faker.number().numberBetween(1,50),
+                    LocalDateTime.now()
+            );
+            cart.addProduct(magazine);
+
+            DiscMagEntity discMag = new DiscMagEntity(
+                    faker.lorem().word() + " Disc Magazine",
+                    Double.parseDouble(faker.commerce().price()),
+                    faker.number().numberBetween(1, 20),
+                    faker.number().numberBetween(1,50),
+                    LocalDateTime.now(),
+                    faker.bool().bool()
+            );
+            cart.addProduct(discMag);
+
+            TicketEntity ticket = new TicketEntity(
+                    faker.lorem().sentence(),
+                    faker.number().randomDouble(2, 1, 100L)
+            );
+            cart.addProduct(ticket);
+
+            PhoneEntity phone = new PhoneEntity(
+                    faker.regexify("[A-F0-9]{32}"),
+                    faker.number().numberBetween(0,100),
+                    carriers[faker.number().numberBetween(0, carriers.length - 1)],
+                    faker.number().randomDouble(2,1,100L)
+            );
+            cart.addProduct(phone);
+
+            LaptopEntity laptop = new LaptopEntity(
+                    faker.regexify("[A-F0-9]{32}"),
+                    faker.number().numberBetween(0,100),
+                    faker.number().numberBetween(128,2048) + "GB",
+                    faker.number().randomDouble(2,1,100L)
+            );
+            cart.addProduct(laptop);
+
             cartRepository.save(cart);
-
-            for (int j = 0; j < 3; j++){
-
-                BookEntity book = new BookEntity(
-                        faker.book().title(),
-                        Double.parseDouble(faker.commerce().price()),
-                        faker.number().numberBetween(1, 20),
-                        faker.book().author(),
-                        faker.number().digits(13)
-                );
-                cart.addProduct(book);
-
-                MagazineEntity magazine = new MagazineEntity(
-                        faker.lorem().word() + " Magazine",
-                        Double.parseDouble(faker.commerce().price()),
-                        faker.number().numberBetween(1, 20),
-                        faker.number().numberBetween(1,50),
-                        LocalDateTime.now()
-                );
-                cart.addProduct(magazine);
-
-                DiscMagEntity discMag = new DiscMagEntity(
-                        faker.lorem().word() + " Disc Magazine",
-                        Double.parseDouble(faker.commerce().price()),
-                        faker.number().numberBetween(1, 20),
-                        faker.number().numberBetween(1,50),
-                        LocalDateTime.now(),
-                        faker.bool().bool()
-                );
-                cart.addProduct(discMag);
-
-                TicketEntity ticket = new TicketEntity(
-                        faker.lorem().sentence(),
-                        faker.number().randomDouble(2, 1, 100L)
-                );
-                cart.addProduct(ticket);
-
-                PhoneEntity phone = new PhoneEntity(
-                        faker.regexify("[A-F0-9]{32}"),
-                        faker.number().numberBetween(0,100),
-                        carriers[faker.number().numberBetween(0, carriers.length - 1)],
-                        faker.number().randomDouble(2,1,100L)
-                );
-                cart.addProduct(phone);
-
-                LaptopEntity laptop = new LaptopEntity(
-                        faker.regexify("[A-F0-9]{32}"),
-                        faker.number().numberBetween(0,100),
-                        faker.number().numberBetween(128,2048) + "GB",
-                        faker.number().randomDouble(2,1,100L)
-                );
-                cart.addProduct(laptop);
-
-                cartRepository.save(cart);
-            }
-
-
         }
 
         List<CartEntity> allCarts = cartRepository.findAll();
