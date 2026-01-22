@@ -2,76 +2,77 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Shopping Cart</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
+    <div class="container">
+        <h1>Your Shopping Cart</h1>
 
-<h1>Your Shopping Cart</h1>
+        <div th:if="${cart.products.empty}">
+            <p>Your cart is empty.</p>
+        </div>
 
-<div th:if="${cart.products.empty}">
-    <p>Your cart is empty.</p>
-</div>
+        <table border="1" th:unless="${cart.products.empty}">
+            <thead>
+            <tr>
+                <th>Item</th>
+                <th>Details</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+            </thead>
 
-<table border="1" th:unless="${cart.products.empty}">
-    <thead>
-    <tr>
-        <th>Item</th>
-        <th>Details</th>
-        <th>Price</th>
-        <th>Action</th>
-    </tr>
-    </thead>
+            <tbody>
+            <tr th:each="product : ${cart.products}">
 
-    <tbody>
-    <tr th:each="product : ${cart.products}">
+                <!-- ================= PUBLICATIONS ================= -->
+                <td th:if="${product instanceof T(csd230.lab1.entities.PublicationEntity)}"
+                    th:text="Publication">
+                </td>
 
-        <!-- ================= PUBLICATIONS ================= -->
-        <td th:if="${product instanceof T(csd230.lab1.entities.PublicationEntity)}"
-            th:text="Publication">
-        </td>
+                <td th:if="${product instanceof T(csd230.lab1.entities.PublicationEntity)}"
+                    th:text="'Title: ' + ${product.title} + ', Copies: ' + ${product.copies}">
+                </td>
 
-        <td th:if="${product instanceof T(csd230.lab1.entities.PublicationEntity)}"
-            th:text="'Title: ' + ${product.title} + ', Copies: ' + ${product.copies}">
-        </td>
+                <!-- ================= ELECTRONICS ================= -->
+                <td th:if="${product instanceof T(csd230.lab1.entities.ElectronicEntity)}"
+                    th:text="'Electronic device'">
+                </td>
 
-        <!-- ================= ELECTRONICS ================= -->
-        <td th:if="${product instanceof T(csd230.lab1.entities.ElectronicEntity)}"
-            th:text="'Electronic device'">
-        </td>
+                <td th:if="${product instanceof T(csd230.lab1.entities.ElectronicEntity)}"
+                    th:text="'Serial: ' + ${product.serialNumber} + ', Qty: ' + ${product.quantity}">
+                </td>
 
-        <td th:if="${product instanceof T(csd230.lab1.entities.ElectronicEntity)}"
-            th:text="'Serial: ' + ${product.serialNumber} + ', Qty: ' + ${product.quantity}">
-        </td>
+                <!-- ================= TICKETS ================= -->
+                <td th:if="${product instanceof T(csd230.lab1.entities.TicketEntity)}"
+                    th:text="'Ticket'">
+                </td>
 
-        <!-- ================= TICKETS ================= -->
-        <td th:if="${product instanceof T(csd230.lab1.entities.TicketEntity)}"
-            th:text="'Ticket'">
-        </td>
+                <td th:if="${product instanceof T(csd230.lab1.entities.TicketEntity)}"
+                    th:text="${product.description}">
+                </td>
 
-        <td th:if="${product instanceof T(csd230.lab1.entities.TicketEntity)}"
-            th:text="${product.description}">
-        </td>
+                <!-- ================= PRICE (COMMON) ================= -->
+                <td th:text="${product.price}"></td>
 
-        <!-- ================= PRICE (COMMON) ================= -->
-        <td th:text="${product.price}"></td>
+                <!-- ================= ACTION ================= -->
+                <td>
+                    <a th:href="@{/cart/remove/{id}(id=${product.id})}">Remove</a>
+                </td>
 
-        <!-- ================= ACTION ================= -->
-        <td>
-            <a th:href="@{/cart/remove/{id}(id=${product.id})}">Remove</a>
-        </td>
+            </tr>
+            </tbody>
+        </table>
 
-    </tr>
-    </tbody>
-</table>
+        <form th:action="@{/cart/checkout}" method="post"
+              th:if="${!cart.products.empty}">
+            <button type="submit">Checkout</button>
+        </form>
 
-<form th:action="@{/cart/checkout}" method="post"
-      th:if="${!cart.products.empty}">
-    <button type="submit">Checkout</button>
-</form>
-
-<br/>
-<p>
-    <a th:href="@{/books}">Continue Shopping</a>
-</p>
-
+        <br/>
+        <p>
+            <a th:href="@{/books}">Continue Shopping</a>
+        </p>
+    </div>
 </body>
 </html>

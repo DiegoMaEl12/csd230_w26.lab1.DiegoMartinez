@@ -92,7 +92,7 @@ public class CartController {
 
             if(product instanceof PublicationEntity publication) {
                 if(publication.getCopies() <= 0 ) {
-                    continue; //skip item
+                    return "redirect:/books?error=out-of-stock";
                 }
                 else{
                     publication.setCopies(publication.getCopies() - 1);

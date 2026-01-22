@@ -22,6 +22,12 @@
 %% Cart relationship
 Cart -- "0..*" Product
 
+%% Order relationship
+Order -- "0..*" Product
+
+%% Conceptual relationship
+Cart ..> Order : creates
+
 %% =====================
 %% Core classes
 %% =====================
@@ -131,3 +137,19 @@ class Cart {
 +removeProduct(Product)
 +getTotal()
 }
+
+%% =====================
+%% Order
+%% =====================
+
+class Order {
+-String orderId
+-Date orderDate
+-double totalAmount
+-Set~Product~ products
+
++Order()
++addProduct(Product)
++getTotal()
+}
+
