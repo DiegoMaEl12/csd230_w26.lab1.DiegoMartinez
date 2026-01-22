@@ -1,11 +1,9 @@
 package csd230.lab1.controllers;
-import csd230.lab1.entities.BookEntity;
-import csd230.lab1.entities.CartEntity;
-import csd230.lab1.entities.OrderEntity;
-import csd230.lab1.entities.PublicationEntity;
+import csd230.lab1.entities.*;
 import csd230.lab1.repositories.BookEntityRepository;
 import csd230.lab1.repositories.CartEntityRepository;
 import csd230.lab1.repositories.OrderEntityRepository;
+import csd230.lab1.repositories.PublicationEntityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -13,6 +11,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.HashSet;
+
 @Controller
 @RequestMapping("/cart")
 public class CartController {
@@ -25,6 +26,9 @@ public class CartController {
 
     @Autowired
     private OrderEntityRepository orderRepository;
+
+    @Autowired
+    private PublicationEntityRepository publicationRepository;
 
     // 1. View the contents of the cart
     @GetMapping
@@ -69,32 +73,43 @@ public class CartController {
         return "redirect:/cart";
     }
 
-    @PostMapping("/cart/checkout")
+    @PostMapping("/checkout")
     public String checkoutCart() {
+
         CartEntity cart = cartRepository.findById(1L).orElse(null);
+
         if(cart == null || cart.getProducts().isEmpty()) {
             return "redirect:/cart";
         }
+
         OrderEntity order = new OrderEntity();
         order.setOrderDate(java.time.LocalDateTime.now());
+
+        double total = 0.0;
         for(var product : cart.getProducts()) {
-            order.setTotalAmount(order.getTotalAmount() + product.getPrice());
-            if(product instanceof PublicationEntity) {
-                var copies = ((PublicationEntity) (product)).getCopies();
-                if (copies <= 0) {
-                    continue; // Skip this product
+
+            total += product.getPrice();
+
+            if(product instanceof PublicationEntity publication) {
+                if(publication.getCopies() <= 0 ) {
+                    continue; //skip item
                 }
                 else{
-                    ((PublicationEntity) product).setCopies(
-                            ((PublicationEntity) product).getCopies() - 1
-                    );
+                    publication.setCopies(publication.getCopies() - 1);
+                    publicationRepository.save(publication);
                 }
             }
             order.getProducts().add(product);
         }
-        orderRepository.save(order);
-        cart.getProducts().clear();
+        order.setTotalAmount(total);
+        OrderEntity  savedOrder = orderRepository.save(order);
+
+
+        for (var product : new HashSet<>(cart.getProducts())) {
+            cart.removeProduct(product);
+        }
+
         cartRepository.save(cart);
-        return "redirect:/orders";
+        return "redirect:/orders/" +  savedOrder.getId();
     }
 }
