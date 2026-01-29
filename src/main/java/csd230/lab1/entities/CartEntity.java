@@ -21,6 +21,12 @@ public class CartEntity {
     )
     private Set<ProductEntity> products = new LinkedHashSet<>();
 
+    @OneToOne
+    @JoinColumn(name= "user_id")
+    private UserEntity user;
+    public UserEntity getUser() {return user;}
+    public void setUser(UserEntity user) {this.user = user;}
+
     public void addProduct(ProductEntity product) {
         this.products.add(product);
         product.getCarts().add(this); // Maintain the link on both sides

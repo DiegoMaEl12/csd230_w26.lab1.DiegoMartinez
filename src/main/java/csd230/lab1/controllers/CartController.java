@@ -1,9 +1,6 @@
 package csd230.lab1.controllers;
 import csd230.lab1.entities.*;
-import csd230.lab1.repositories.BookEntityRepository;
-import csd230.lab1.repositories.CartEntityRepository;
-import csd230.lab1.repositories.OrderEntityRepository;
-import csd230.lab1.repositories.PublicationEntityRepository;
+import csd230.lab1.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.security.Principal;
 import java.util.HashSet;
 
 @Controller
@@ -30,30 +28,36 @@ public class CartController {
     @Autowired
     private PublicationEntityRepository publicationRepository;
 
+    @Autowired
+    private UserEntityRepository userRepository;
+
+    private CartEntity getCartForCurrentUser(Principal principal){
+        String username = principal.getName();
+        UserEntity user = userRepository.findByUsername(username);
+        CartEntity cart = cartRepository.findByUser(user);
+        if(cart == null){
+            cart = new CartEntity();
+            cart.setUser(user);
+            cartRepository.save(cart);
+        }
+        return cart;
+    }
+
     // 1. View the contents of the cart
     @GetMapping
-    public String viewCart(Model model) {
+    public String viewCart(Model model, Principal principal) {
         // HARDCODED ID: In a real app, this comes from the Session or SecurityContext
-        Long defaultCartId = 1L;
-
-        // Find cart with ID 1, or create a temporary empty one if not found
-        CartEntity cart = cartRepository.findById(defaultCartId)
-                .orElseGet(() -> {
-                    CartEntity newCart = new CartEntity();
-                    newCart.setId(defaultCartId);
-                    return cartRepository.save(newCart); // Save it so it exists
-                });
+        CartEntity cart = getCartForCurrentUser(principal);
         model.addAttribute("cart", cart);
         return "cartDetails";
     }
 
     // 2. Add a specific book to the cart
     @GetMapping("/add/{bookId}")
-    public String addToCart(@PathVariable Long bookId) {
-        Long defaultCartId = 1L;
-        CartEntity cart = cartRepository.findById(defaultCartId).orElse(null);
+    public String addToCart(@PathVariable Long bookId, Principal principal) {
+        CartEntity cart = getCartForCurrentUser(principal);
         BookEntity book = bookRepository.findById(bookId).orElse(null);
-        if (cart != null && book != null) {
+        if (book != null) {
             cart.addProduct(book); // Uses the helper method in CartEntity
             cartRepository.save(cart); // Updates the Join Table
         }
@@ -62,11 +66,10 @@ public class CartController {
 
     // 3. Remove item from cart
     @GetMapping("/remove/{bookId}")
-    public String removeFromCart(@PathVariable Long bookId) {
-        Long defaultCartId = 1L;
-        CartEntity cart = cartRepository.findById(defaultCartId).orElse(null);
+    public String removeFromCart(@PathVariable Long bookId, Principal principal) {
+        CartEntity cart = getCartForCurrentUser(principal);
         BookEntity book = bookRepository.findById(bookId).orElse(null);
-        if(cart != null && book != null) {
+        if(book != null) {
             cart.getProducts().remove(book);
             cartRepository.save(cart);
         }
