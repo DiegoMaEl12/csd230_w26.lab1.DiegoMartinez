@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml" lang="en">
 <head>
     <title>Book List</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -21,7 +21,7 @@
         <p>
             <a th:href="@{/cart}">View Cart</a>
         </p>
-        <table border="1">
+        <table>
             <thead>
                 <tr>
                     <th>Title</th>
@@ -39,8 +39,11 @@
                     <td th:text="${book.copies}"></td>
                     <td>
                         <a th:href="@{/books/{id}(id=${book.id})}">Details</a>
-
-                        <strong><a th:href="@{/cart/add/{id}(id=${book.id})}">Add to Cart</a></strong>
+                        <span th:if="${book.copies > 0}">
+                            <strong>
+                                <a th:href="@{/cart/add/{id}(id=${book.id})}">Add to Cart</a>
+                            </strong>
+                        </span>
                         <!-- ADMIN ACTIONS: Hidden for normal users -->
                         <span sec:authorize="hasRole('ADMIN')">
                             | <a th:href="@{/books/edit/{id}(id=${book.id})}">Edit</a>
