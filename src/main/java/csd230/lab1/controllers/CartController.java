@@ -46,7 +46,6 @@ public class CartController {
     // 1. View the contents of the cart
     @GetMapping
     public String viewCart(Model model, Principal principal) {
-        // HARDCODED ID: In a real app, this comes from the Session or SecurityContext
         CartEntity cart = getCartForCurrentUser(principal);
         model.addAttribute("cart", cart);
         return "cartDetails";
@@ -77,9 +76,9 @@ public class CartController {
     }
 
     @PostMapping("/checkout")
-    public String checkoutCart() {
+    public String checkoutCart(Principal principal) {
 
-        CartEntity cart = cartRepository.findById(1L).orElse(null);
+        CartEntity cart = getCartForCurrentUser(principal);
 
         if(cart == null || cart.getProducts().isEmpty()) {
             return "redirect:/cart";
