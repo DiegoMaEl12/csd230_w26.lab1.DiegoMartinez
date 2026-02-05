@@ -32,6 +32,8 @@ public class WebSecurityConfig {
                         // 1. Allow public access to specific endpoints
                         .requestMatchers("/h2-console/**", "/login", "/css/**", "/js/**", "/register").permitAll()
 
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+
                         // 2. Admin only endpoints (CRUD operations on books)
                         .requestMatchers("/books/add", "/books/edit/**", "/books/delete/**").hasRole("ADMIN")
 
